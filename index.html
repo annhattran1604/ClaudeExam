@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Ôn thi CCA — Hỏi &amp; Đáp</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='700' font-size='26' fill='%2338bdf8'%3ECCA%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <div class="topbar-row">
+      <button id="menuBtn" class="course-toggle" type="button" aria-expanded="false" aria-controls="courseDrawer">
+        <span class="course-badge" id="activeCourseCode">...</span>
+        <span class="course-title" id="activeCourseName">Đang tải...</span>
+        <svg class="chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+      <div class="topbar-actions">
+        <span id="countBadge" class="count-badge">0 câu</span>
+        <button id="themeBtn" class="icon-btn" type="button" title="Đổi giao diện sáng/tối" aria-label="Đổi giao diện sáng tối">◐</button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"/>
+        </svg>
+        <input id="searchInput" type="search" inputmode="search" placeholder="Tìm từ khóa hoặc số câu..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+      </div>
+      <button id="quickClearBtn" class="scope-btn" type="button" title="Xóa nhanh từ khóa đang tìm" disabled>Xóa</button>
+    </div>
+
+    <nav id="courseDrawer" class="course-drawer" aria-label="Chọn khóa học" hidden></nav>
+  </header>
+
+  <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+
+  <main id="app" class="container">
+    <div id="statusLine" class="status-line" hidden></div>
+    <div id="questionList" class="question-list"></div>
+    <div id="scrollSentinel" class="scroll-sentinel" aria-hidden="true"></div>
+  </main>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" type="button" aria-label="Lên đầu trang" hidden>↑</button>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

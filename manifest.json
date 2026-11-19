@@ -1,0 +1,9 @@
+{
+  "name": "Ôn thi CCA — Hỏi & Đáp",
+  "short_name": "Ôn thi CCA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "vi"
+}
