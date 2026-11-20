@@ -220,12 +220,22 @@
   }
 
   // Filter & Search
+  // Normalise text so search ignores case, accents, punctuation, quote styles and spacing.
+  function normText(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/đ/g, "d")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
   function getFilteredItems() {
     const raw = searchInput.value.trim();
-    const query = raw.toLowerCase();
     const targetCourses = searchAll ? courses : [courseMap.get(activeCourseId)].filter(Boolean);
 
-    if (!query) {
+    if (!raw) {
       activeTokens = [];
       const list = [];
       for (const c of targetCourses) {
@@ -236,8 +246,8 @@
       return list;
     }
 
-    // Check question number match (e.g. "12" or "câu 12")
-    const numMatch = query.match(/^(?:câu\s*)?(\d+)$/i);
+    // Question number match (e.g. "12" or "câu 12")
+    const numMatch = raw.toLowerCase().match(/^(?:câu\s*)?(\d+)$/i);
     if (numMatch) {
       const num = parseInt(numMatch[1], 10);
       activeTokens = [];
@@ -250,41 +260,23 @@
       return list;
     }
 
-    // Exact phrase match in question text
-    let list = [];
+    // Keywords: every word must appear somewhere in the question or its correct answers
+    const phrase = normText(raw);
+    const words = phrase.split(" ").filter(Boolean);
+    activeTokens = raw.split(/\s+/).filter((w) => w.length > 0);
+    if (!words.length) return [];
+
+    const exact = [];
+    const loose = [];
     for (const c of targetCourses) {
       for (const q of c.questions) {
-        if ((q.t || "").toLowerCase().includes(query)) {
-          list.push({ course: c, q });
-        }
+        const hay = " " + q.s + " ";
+        if (!words.every((w) => hay.includes(w))) continue;
+        if (words.length > 1 && hay.includes(" " + phrase + " ")) exact.push({ course: c, q });
+        else loose.push({ course: c, q });
       }
     }
-
-    if (list.length > 0) {
-      activeTokens = [raw];
-      return list;
-    }
-
-    // Fallback: all space-separated keywords present in question text
-    const words = raw.split(/\s+/).filter((w) => w.length > 0);
-    if (words.length > 1) {
-      const lowerWords = words.map((w) => w.toLowerCase());
-      for (const c of targetCourses) {
-        for (const q of c.questions) {
-          const text = (q.t || "").toLowerCase();
-          if (lowerWords.every((w) => text.includes(w))) {
-            list.push({ course: c, q });
-          }
-        }
-      }
-      if (list.length > 0) {
-        activeTokens = words;
-        return list;
-      }
-    }
-
-    activeTokens = [raw];
-    return [];
+    return exact.concat(loose);
   }
 
   function createCardHtml({ course, q }) {
@@ -293,7 +285,7 @@
     const answersHtml = q.a
       .map(
         (ansHtml) =>
-          `<div class="answer-item-wrap"><div class="answer-item">${sanitizeHtml(ansHtml)}</div></div>`
+          `<div class="answer-item-wrap"><div class="answer-item">${highlightHtml(ansHtml, activeTokens)}</div></div>`
       )
       .join("");
 
