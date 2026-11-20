@@ -260,7 +260,7 @@
       return list;
     }
 
-    // Keywords: every word must appear somewhere in the question or its correct answers
+    // Keywords: every word must appear in the question text only (answers are not searched)
     const phrase = normText(raw);
     const words = phrase.split(" ").filter(Boolean);
     activeTokens = raw.split(/\s+/).filter((w) => w.length > 0);
@@ -285,7 +285,7 @@
     const answersHtml = q.a
       .map(
         (ansHtml) =>
-          `<div class="answer-item-wrap"><div class="answer-item">${highlightHtml(ansHtml, activeTokens)}</div></div>`
+          `<div class="answer-item-wrap"><div class="answer-item">${sanitizeHtml(ansHtml)}</div></div>`
       )
       .join("");
 
